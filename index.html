@@ -1,57 +1,53 @@
 <!DOCTYPE html>
 <html lang="ja">
-<head>
-  <meta charset="UTF-8">
-  <title>匿名アンケート</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    body { font-family: sans-serif; max-width: 600px; margin: auto; padding: 20px; }
-    textarea, input, button { width: 100%; margin-top: 10px; padding: 10px; font-size: 16px; }
-  </style>
-</head>
-<body>
-  <h2>匿名アンケート</h2>
-  <form id="surveyForm">
-    <label>Q1: このサービスをどう思いますか？</label>
-    <textarea name="q1" required></textarea>
+  <head>
+    <meta charset="UTF-8" />
+    <title>匿名アンケート</title>
+    <style>
+      body { font-family: sans-serif; padding: 20px; max-width: 600px; margin: auto; }
+      input, textarea, button { width: 100%; margin-top: 10px; padding: 8px; }
+    </style>
+  </head>
+  <body>
+    <h2>匿名アンケート</h2>
+    <form id="surveyForm">
+      <label>Q1: このサービスをどう思いますか？</label>
+      <textarea name="q1" required></textarea>
 
-    <label>Q2: 年齢層を教えてください（任意）</label>
-    <input type="text" name="q2">
+      <label>Q2: 年齢層を教えてください（任意）</label>
+      <input type="text" name="q2" />
 
-    <button type="submit">送信</button>
-  </form>
+      <button type="submit">送信</button>
+    </form>
+    <p id="response"></p>
 
-  <p id="response"></p>
+    <script>
+      const form = document.getElementById('surveyForm');
+      const response = document.getElementById('response');
 
-  <script>
-    const form = document.getElementById('surveyForm');
-    const response = document.getElementById('response');
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
 
-    form.addEventListener('submit', function(e) {
-      e.preventDefault();
+        const data = {
+          q1: form.q1.value,
+          q2: form.q2.value
+        };
 
-      const data = {
-        q1: form.q1.value,
-        q2: form.q2.value
-      };
-
-      fetch("https://script.google.com/macros/s/AKfycbzqLuvBwuM00lfDb7wMXH35HI-1rBi1eTr7ms67L7oeBc5hnE4JDcAPg0-JRtwdDqpO/exec", {
-        method: "POST",
-        body: JSON.stringify(data),
-        headers: {
-          "Content-Type": "application/json"
-        }
-      })
-      .then(res => res.text())
-      .then(txt => {
-        response.textContent = "送信ありがとうございました！";
-        form.reset();
-      })
-      .catch(err => {
-        response.textContent = "送信エラーが発生しました。";
-        console.error(err);
+        fetch('/submit', {
+          method: 'POST',
+          body: JSON.stringify(data),
+          headers: { 'Content-Type': 'application/json' }
+        })
+          .then(res => res.text())
+          .then(txt => {
+            response.textContent = '送信ありがとうございました！';
+            form.reset();
+          })
+          .catch(err => {
+            response.textContent = '送信に失敗しました。';
+            console.error(err);
+          });
       });
-    });
-  </script>
-</body>
+    </script>
+  </body>
 </html>
